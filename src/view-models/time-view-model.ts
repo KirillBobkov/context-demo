@@ -1,19 +1,20 @@
 import { createPropertyAdapter, Property } from "../utils/property.utils";
 import { context } from "../context/context2";
-import { sink, Sink } from "../utils/sink";
+import { Sink } from "../utils/sink";
 import { pipe } from "fp-ts/lib/function";
 import { merge, timer } from "rxjs";
 import { tap } from "rxjs/operators";
 import { newSink } from "../context/sink2";
 
+export type Milliseconds = number;
 export interface TimeViewModel {
-  readonly setTime: (time: number) => void;
-  readonly time: Property<number>;
+  readonly setTime: (time: Milliseconds) => void;
+  readonly time: Property<Milliseconds>;
 }
 
 export const createTimeViewModel = context.of(
-  (initialTime: number): Sink<TimeViewModel> => {
-    const [setTime, time] = createPropertyAdapter<number>(initialTime);
+  (initialTime: Milliseconds): Sink<TimeViewModel> => {
+    const [setTime, time] = createPropertyAdapter<Milliseconds>(initialTime);
 
     const tickEffect = pipe(
       timer(0, 1000),
@@ -25,7 +26,7 @@ export const createTimeViewModel = context.of(
     const logEffect = pipe(
       time,
       tap(() => {
-        console.log(time.getValue());
+        console.log('current time effect value:', time.getValue());
       })
     );
 
