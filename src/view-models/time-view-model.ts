@@ -29,6 +29,7 @@ export const createTimeViewModel = context.of(
       })
     );
 
+    // RxJs effects
     const effects = merge(tickEffect, logEffect);
 
     return newSink(
