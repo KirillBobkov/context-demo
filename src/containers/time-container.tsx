@@ -10,13 +10,15 @@ const TimeContainer = context.combine(
   (createTimeViewModel): FC<{}> => () => {
       const initialTime = Date.now();
 
+      // creating view-model
       const timeViewModel = useSink(
         () => createTimeViewModel(initialTime),
         [createTimeViewModel]
       );
 
       const time = useProperty(timeViewModel.time);
-	  console.log('render', time);
+
+      // passing view-model data into React component
       return <TimeComponent time={time} />;
     }
 );

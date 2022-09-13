@@ -1,20 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import TimeContainer from './containers/time-container';
 import { useSink } from './utils/use-sink';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-
 const App = () => {
+  // container initialization
   const TimeContainerFC = useSink(() => TimeContainer({}), []);
 
   return <TimeContainerFC />;
 };
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+ReactDOM.render(
+  <App />,
+  document.getElementById('root') as HTMLElement
 );
