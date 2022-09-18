@@ -1,15 +1,19 @@
 import React, { FC } from "react";
-import { useProperty } from "../utils/react.utils";
+import { useObservable, useProperty } from "../utils/react.utils";
 import { useSink } from "../utils/use-sink";
 import { createTimeViewModel } from "../view-models/time-view-model";
 import { TimeComponent } from "../components/time.component";
 import { context } from "../context/context2";
 import { createColorViewModel } from "../view-models/color-view-model";
+import { createResizeViewModel } from "../view-models/resize.view-model";
+
+const DEFAULT_WIDTH = window.innerWidth;
 
 const TimeContainer = context.combine(
   createTimeViewModel,
+  createResizeViewModel,
   context.defer(createColorViewModel, "timeViewModel"),
-  (createTimeViewModel): FC<{}> =>
+  (createTimeViewModel, createResizeViewModel, createColorViewModel): FC<{}> =>
     () => {
       const initialTime = Date.now();
 
@@ -17,6 +21,12 @@ const TimeContainer = context.combine(
       const timeViewModel = useSink(
         () => createTimeViewModel(initialTime),
         [createTimeViewModel]
+      );
+
+      // creating resize view-model
+      const resizeViewModel = useSink(
+        () => createResizeViewModel(),
+        [createResizeViewModel]
       );
 
       // create sink with dependencies
@@ -27,15 +37,16 @@ const TimeContainer = context.combine(
 
       // creating color view-model
       const colorViewModel = useSink(
-        () => colorViewModelSink('blue'),
+        () => colorViewModelSink("blue"),
         [createColorViewModel]
       );
 
+      const width = useObservable(resizeViewModel.windowWidth, DEFAULT_WIDTH);
       const color = useProperty(colorViewModel.color);
       const time = useProperty(timeViewModel.time);
 
       // passing view-model data into React component
-      return <TimeComponent time={time} color={color} />;
+      return <TimeComponent time={time} color={color} width={width} />;
     }
 );
 

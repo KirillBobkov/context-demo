@@ -13,7 +13,7 @@ export interface ColorViewModel {
 }
 
 export interface CreateColorViewModel {
-	(initialLayout: string): Sink<ColorViewModel>;
+	(initialColor: string): Sink<ColorViewModel>;
 }
 
 export const createColorViewModel = context.combine(
