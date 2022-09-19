@@ -6,16 +6,25 @@ import { TimeComponent } from "../components/time.component";
 import { context } from "../context/context2";
 import { createColorViewModel } from "../view-models/color-view-model";
 import { createResizeViewModel } from "../view-models/resize.view-model";
+import { NewsProvider } from "..";
 
 const DEFAULT_WIDTH = window.innerWidth;
 
 const TimeContainer = context.combine(
   createTimeViewModel,
+  context.key<NewsProvider>()("newsProvider"),
   createResizeViewModel,
   context.defer(createColorViewModel, "timeViewModel"),
-  (createTimeViewModel, createResizeViewModel, createColorViewModel): FC<{}> =>
+  (
+      createTimeViewModel,
+      newsProvider,
+      createResizeViewModel,
+      createColorViewModel
+    ): FC<{}> =>
     () => {
       const initialTime = Date.now();
+
+      const newsPost = newsProvider.facebook;
 
       // creating time view-model
       const timeViewModel = useSink(
@@ -46,7 +55,14 @@ const TimeContainer = context.combine(
       const time = useProperty(timeViewModel.time);
 
       // passing view-model data into React component
-      return <TimeComponent time={time} color={color} width={width} />;
+      return (
+        <TimeComponent
+          time={time}
+          newsPost={newsPost}
+          color={color}
+          width={width}
+        />
+      );
     }
 );
 
