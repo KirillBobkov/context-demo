@@ -1,9 +1,13 @@
-import React from 'react';
+import React from "react";
 
 export interface TimeComponentProps {
-	time: number;
+  time: number;
+  newsPost: string;
 }
 
-export const TimeComponent = ({ time }: TimeComponentProps) => (
-	<span>{new Date(time).toUTCString()}</span>
+export const TimeComponent = ({ time, newsPost }: TimeComponentProps) => (
+  <>
+    <p>{new Date(time).toUTCString()}</p>
+    <p>{newsPost}</p>
+  </>
 );
