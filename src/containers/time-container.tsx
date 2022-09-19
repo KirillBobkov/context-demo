@@ -11,11 +11,7 @@ const TimeContainer = context.combine(
   createTimeViewModel,
   context.key<NewsProvider>()("newsProvider"),
   context.defer(createColorViewModel, "timeViewModel"),
-  (
-      createTimeViewModel,
-      newsProvider,
-      createColorViewModel
-    ): FC<{}> =>
+  (createTimeViewModel, newsProvider, createColorViewModel): FC<{}> =>
     () => {
       const initialTime = Date.now();
 
@@ -30,26 +26,20 @@ const TimeContainer = context.combine(
       // create sink with dependencies
       const colorViewModelSink = useSink(
         () => createColorViewModel({ timeViewModel }),
-        [createColorViewModel]
+        [timeViewModel, createColorViewModel]
       );
 
       // creating color view-model
       const colorViewModel = useSink(
         () => colorViewModelSink("blue"),
-        [createColorViewModel]
+        [colorViewModelSink]
       );
 
       const color = useProperty(colorViewModel.color);
       const time = useProperty(timeViewModel.time);
 
       // passing view-model data into React component
-      return (
-        <TimeComponent
-          time={time}
-          newsPost={newsPost}
-          color={color}
-        />
-      );
+      return <TimeComponent time={time} newsPost={newsPost} color={color} />;
     }
 );
 
